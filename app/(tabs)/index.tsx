@@ -1,5 +1,6 @@
 import APISettingsComponent from "@/components/APISettingsComponent";
 import CameraComponent from "@/components/CameraComponent";
+import LidarObstacleDetector from "@/components/LidarObstacleDetector";
 import OCRResultComponent from "@/components/OCRResultComponent";
 import { OCRResult, getGoogleVisionApiKey } from "@/utils/ocrService";
 import { router } from "expo-router";
@@ -12,6 +13,7 @@ export default function Index() {
   const [ocrResults, setOcrResults] = useState<OCRResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [showAPISettings, setShowAPISettings] = useState(false);
+  const [showLidarDetector, setShowLidarDetector] = useState(false);
 
   const handleTextRecognized = async (results: OCRResult[]) => {
     // 매우 강력한 텍스트 필터링 - 실제 텍스트만 추출
@@ -168,6 +170,14 @@ export default function Index() {
     );
   }
 
+  if (showLidarDetector) {
+    return (
+      <LidarObstacleDetector
+        onClose={() => setShowLidarDetector(false)}
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🚀 Smart Cane</Text>
@@ -189,6 +199,13 @@ export default function Index() {
         <View style={styles.buttonSpacing} />
         
         <Button
+          title="🔍 라이다 장애물 감지"
+          onPress={() => setShowLidarDetector(true)}
+        />
+        
+        <View style={styles.buttonSpacing} />
+        
+        <Button
           title="🔊 TTS 테스트"
           onPress={() => router.push("/modal")}
         />
@@ -196,17 +213,18 @@ export default function Index() {
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>
-          📷 버튼을 눌러 카메라로 텍스트를 촬영하거나{'\n'}
-          📷 갤러리에서 이미지를 선택하여{'\n'}
-          Google Cloud Vision API로 실제 텍스트를 인식하고 음성으로 들을 수 있습니다.
+          📷 OCR 텍스트 인식: 카메라로 텍스트를 촬영하여 음성으로 들을 수 있습니다{'\n'}
+          🔍 라이다 장애물 감지: 블루투스로 연결된 라이다 센서로 거리별 진동 알림{'\n'}
+          ⚙️ API 설정: Google Cloud Vision API 키를 설정할 수 있습니다
         </Text>
         <View style={styles.featuresContainer}>
           <Text style={styles.featuresTitle}>🚀 주요 기능:</Text>
           <Text style={styles.featureText}>• Google Cloud Vision API (실제 OCR)</Text>
-          <Text style={styles.featureText}>• 한국어/영어 동시 지원</Text>
-          <Text style={styles.featureText}>• 실시간 텍스트 인식</Text>
-          <Text style={styles.featureText}>• 바운딩 박스 정보 제공</Text>
+          <Text style={styles.featureText}>• 라이다 센서 블루투스 연결</Text>
+          <Text style={styles.featureText}>• 거리별 진동 세기 조절</Text>
+          <Text style={styles.featureText}>• 실시간 장애물 감지</Text>
           <Text style={styles.featureText}>• TTS 음성 출력</Text>
+          <Text style={styles.featureText}>• 한국어/영어 동시 지원</Text>
         </View>
       </View>
     </View>
